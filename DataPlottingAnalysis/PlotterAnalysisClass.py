@@ -74,9 +74,11 @@ class data_analysis():
         '''Computes the residuals of the fit and then normalises them, the associated plot
         is then also provided along with the proportion of data points within 1, 2 and 3 
         standard deviations.'''
+        
         #Compute residuals and normalised residuals
         residuals = fit_data - original_data
         normalised_residuals = residuals/original_data_yerr
+        
         #Create scatter plot of normalised residuals
         plt.scatter(original_data, normalised_residuals)
         plt.xlabel("X Label") #Use heading of column from pandas to determine x labe
@@ -84,8 +86,10 @@ class data_analysis():
         plt.xlim([np.min(original_data) - 1, np.max(original_data) + 1])
         plt.ylim([np.min(normalised_residuals) - 1, np.max(normalised_residuals) + 1])
         plt.show()
+        
         #Determine proportion of normalised residuals within 1, 2 and 3 of 0
         #Plot histogram of normalised residuals and fit to gaussian with mean 0 and std of 1
+        
         return normalised_residuals 
         
     def chi_squared(norm_residuals, observed_value, expected_value, continuous_marker):
@@ -95,6 +99,7 @@ class data_analysis():
         is used to calculate RSS for continuous data; observed and expected value are used tor
         discrete data after binning. The continuous_marker parameter defines how the RSS is
         calculated, use TRUE for continuous data and FALSE for discrete (binned) data.'''
+        
         #Discrete RSS and continuous RSS are calculated differently
         if continuous_marker == "TRUE":
             RSS = np.sum(norm_residuals**2)
@@ -105,6 +110,7 @@ class data_analysis():
         else:
             print("Error in chi_squared(). Unknown continuous marker parsed.")
         print("The residual sum of squares (RSS) or chi squared of this fit is", RSS)
+        
         #Contour plots of variation of fit parameters effect on chi squared
         
         #CONTOUR PLOTS HERE
@@ -114,6 +120,8 @@ class data_analysis():
         
     def reduced_chi_squared(RSS, num_degree_freedom):
         '''Computes the reduced chi squared given the RSS and number of degrees of freedom.'''
+        
+        #Calculate reduced chi squared
         print("The number of degrees of freedom in this problem is:", num_degree_freedom)
         reduced_chi_squared = RSS/num_degree_freedom
         print("The reduced chi squared associated with this fit is:", reduced_chi_squared)
@@ -123,12 +131,19 @@ class data_analysis():
     def durbin_watson(norm_residuals):
         '''Given the normalised residuals of the fit this function computes the Durbin Watson
         Statistic associated with the fit and creates lag plots of normalised residuals'''
+        
         #Computing Durbin Watson
         durbin_watson = stattools.durbin_watson(norm_residuals)
         print("The Durbin Watson Statistic associated with this fit is:", durbin_watson)
+        
         #Create lag plots of normalised residuals
-        
-        
+        for i in range(np.size(norm_residuals)):
+            plt.scatter(norm_residuals[i - 1], norm_residuals[i], color = 'blue')
+
+        plt.xlabel("R$_{\mathrm{i - 1}}$")
+        plt.ylabel("R$_\mathrm{i}$")
+        plt.title("Lag Plot of Normalised Residuals")
+        plt.show()
         
         #Determine proportion of normalised residuals within 1, 2 and 3 of 0 on lag plots as wwell
         
