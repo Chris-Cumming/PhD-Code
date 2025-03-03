@@ -29,6 +29,7 @@ Created on Mon Mar  3 12:57:18 2025
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+from scipy import linalg
 from statsmodels.stats import stattools #Used for calculating Durbin-Watson statistic
 
 
@@ -149,16 +150,27 @@ class data_analysis():
         
         
         
-    def correlation_matrix():
+    def correlation_matrix(cov_fit_matrix):
         '''Given the covariance matrix from the fit applied in data_plotter() both the curvature
         and correlation matrix will be determined.'''
-        #covariance_matrix = 
-        #print(covariance_matrix)
-        #curvature_matrix = 
-        #print(curvature_matrix)
-        #correlation_matrix = 
-        #print(correlation_matrix)
         
+        #Covariance matrix as determined by fit
+        covariance_matrix = cov_fit_matrix
+        print("The covariance matrix associated with this fit is:", covariance_matrix)
+        
+        #Curvature matrix determined from covariance matrix
+        curvature_matrix = linalg.inv(covariance_matrix)
+        print("The curvature matrix associated with this fit is:", curvature_matrix)
+        
+        #Correlation matrix is determined element by element from the covariance matrix
+        length_covariance_matrix = np.size(covariance_matrix, axis = 0)
+        width_covariance_matrix = np.size(covariance_matrix, axis = 1)
+        correlation_matrix = np.zeros([width_covariance_matrix, length_covariance_matrix])
+        for i in range(width_covariance_matrix):
+            for j in range(length_covariance_matrix):
+                correlation_matrix[i, j] = covariance_matrix[i, j]/np.sqrt(covariance_matrix[i, i] * covariance_matrix[j, j])
+        print("The correlation matrix associated with this fit is:", correlation_matrix)
+        return covariance_matrix, curvature_matrix, correlation_matrix
         
         
         
