@@ -31,6 +31,7 @@ class data_plotter():
         #lorentzian
         #pseudo-voigt
         #polynomial of order 2
+        #polynomial of order 3
     
     def fit_func_linear(x, m, c):
         '''Fitting function of linear form. y = mx + c, where m is the gradient and c is the intercept.'''
@@ -50,7 +51,9 @@ class data_plotter():
         '''Fitting function of polynomial of order 2: y = ax^2 + bx + c.'''
         return a * x**2 + b * x + c
     
-    
+    def poly3(x, a, b, c, d):
+        '''Fitting function of polynomial of order 3: y = ax^3 + bx^2 + cx + d.'''
+        return a * x**3 + b * x**2 + c * x + d
     
     
     
