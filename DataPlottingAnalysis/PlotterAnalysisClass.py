@@ -49,20 +49,33 @@ class data_plotter():
         '''Fits data to given fit function using ODRPACK95 which allows both parameter constraints and 
         accounts for errors in both dependent and independent variables. Plot of original data with
         determined fit also produced.'''
+        
+        #Use ODRPACK95 binding
     
     def fit_func_linear(x, m, c):
         '''Fitting function of linear form. y = mx + c, where m is the gradient and c is the intercept.'''
         return m * x + c
     
-    def fit_func_gaussian():
-        '''Fitting function of gaussian form.'''
+    def fit_func_gaussian(x, A, mean, sigma, c):
+        '''Fitting function of gaussian form. Here A is the amplitude and c is the vertical 
+        offset of the Gaussian.Same definition as Wolfram:
+        https://mathworld.wolfram.com/GaussianFunction.html'''
+        return A * 1/(sigma * np.sqrt(2 * np.pi)) * np.exp(-((x - mean)**2)/(2 * sigma**2)) + c
         
+    def fit_func_lorentzian(x, A, mean, gamma, c):
+        '''Fitting function of Lorentzian form. Here A is the amplitude and c is the vertical
+        offset of the Lorentzian with FWHM of gamma. Same definition as Wolfram:
+        https://mathworld.wolfram.com/LorentzianFunction.html'''
+        return A * 1/np.pi * ((gamma/2)/((x - mean)**2 + (gamma/2)**2)) + c
         
-    def fit_func_lorentzian():
-        '''Fitting function of Lorentzian form.'''
-        
-    def fit_func_pseudo_voigt():
-        '''Fitting function of pseudo-voigt form'''
+    def fit_func_pseudo_voigt(x, epsilon, A_1, A_2, sigma, gamma, mean_1, mean_2, c_1, c_2):
+        '''Fitting function of pseudo-voigt form. Pseudo-voigt means weighted sum of Gaussian 
+        ad Lorentzian lineshapes. This is a useful analytic approximation of the convolution
+        between a Lorentzian and a Gaussian that a Voigt profile constitutes. If the fit struggles
+        it might be useful to give the Lorentzian and Gaussian the same mean to prevent funky
+        fitting from happening.'''
+        return epsilon * A_1 * 1/(sigma * np.sqrt(2 * np.pi)) * np.exp(-((x - mean_1)**2)/(2 * sigma**2)) + c_1 + \
+            (1 - epsilon) * A_2 * 1/np.pi * ((gamma/2)/((x - mean_2)**2 + (gamma/2)**2)) + c_2
         
     def poly2(x, a, b, c):
         '''Fitting function of polynomial of order 2: y = ax^2 + bx + c.'''
