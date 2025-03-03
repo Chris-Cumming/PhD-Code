@@ -10,10 +10,17 @@ Created on Mon Mar  3 12:57:18 2025
 #This version is up to data as of: 03/03/2025
 
 #This code uses a python binding of ODRPACK95 as its fitting method. As of 03/03/2025
-#there is no implementation of ODRPACK in scipy. This version of ODRPACK allows constraints
+#there is no implementation of ODRPACK95 in scipy. This version of ODRPACK allows constraints
 #to be imposed on fit parameter values in addition to accounting for independent variable errors.
 #This may not be the best fitting method and it may change in the future. Tom has used MCMC which
 #may be worth considering in the future.
+
+#The GitHub repo for the python binding of ODRPACK95 can be found here:
+#https://github.com/HugoMVale/odrpack95
+#The home page for the binding, which inclues API and documentation, is:
+#https://pypi.org/project/odrpack/
+#The discussion on replacing the current version of ODRPACK in scipy can be found here:
+#https://github.com/scipy/scipy/issues/7107
 
 #Fitting functions will be added over time as and when they are needed.
 #Current list of fitting functions available to parse to fitter() is:
@@ -74,7 +81,8 @@ class data_analysis():
     def normalised_residuals(fit_data, original_data, original_data_yerr):
         '''Computes the residuals of the fit and then normalises them, the associated plot
         is then also provided along with the proportion of data points within 1, 2 and 3 
-        standard deviations.'''
+        standard deviations. These normalised residuals should follow a standard normal 
+        distribution.'''
         
         #Compute residuals and normalised residuals
         residuals = fit_data - original_data
@@ -139,8 +147,7 @@ class data_analysis():
         
         #CONTOUR PLOTS HERE
         
-        return RSS
-        
+        return RSS 
         
     def reduced_chi_squared(RSS, num_degree_freedom):
         '''Computes the reduced chi squared given the RSS and number of degrees of freedom.'''
@@ -150,7 +157,6 @@ class data_analysis():
         reduced_chi_squared = RSS/num_degree_freedom
         print("The reduced chi squared associated with this fit is:", reduced_chi_squared)
         return reduced_chi_squared
-        
         
     def durbin_watson(norm_residuals):
         '''Given the normalised residuals of the fit this function computes the Durbin Watson
