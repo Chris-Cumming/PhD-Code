@@ -88,7 +88,30 @@ class data_analysis():
         plt.ylim([np.min(normalised_residuals) - 1, np.max(normalised_residuals) + 1])
         plt.show()
         
-        #Determine proportion of normalised residuals within 1, 2 and 3 of 0
+        #Determine proportion of normalised residuals within 1, 2 and 3 sigma of 0
+        counter_1 = 0 #Keeps track of how many data points have normalised residuals within 1 sigma of 0
+        counter_2 = 0 #Keeps track of how many data points have normalised residuals within 2 sigma of 0
+        counter_3 = 0 #Keeps track of how many data points have normalised residuals within 3 sigma of 0
+        num_norm_residuals = np.size(normalised_residuals)
+        for i in range(num_norm_residuals):
+            if abs(normalised_residuals[i]) <= 1:
+                counter_1 += 1
+            elif abs(normalised_residuals[i]) <= 2:
+                counter_2 += 1
+            elif abs(normalised_residuals[i]) <= 3:
+                counter_3 += 1
+            else:
+                counter_1 = counter_1
+                counter_2 = counter_2
+                counter_3 = counter_3
+            proportion_1 = counter_1/num_norm_residuals
+            print("The proportion of data points within 1 sigma of 0 is:", proportion_1)
+            proportion_2 = counter_2/num_norm_residuals
+            print("The proportion of data points within 2 sigma of 0 is:", proportion_2)
+            proportion_3 = counter_3/num_norm_residuals
+            print("The proportion of data points within 3 sigma of 0 is:", proportion_3)
+                
+        
         #Plot histogram of normalised residuals and fit to gaussian with mean 0 and std of 1
         
         return normalised_residuals 
@@ -145,9 +168,6 @@ class data_analysis():
         plt.ylabel("R$_\mathrm{i}$")
         plt.title("Lag Plot of Normalised Residuals")
         plt.show()
-        
-        #Determine proportion of normalised residuals within 1, 2 and 3 of 0 on lag plots as wwell
-        
         
         
     def correlation_matrix(cov_fit_matrix):
