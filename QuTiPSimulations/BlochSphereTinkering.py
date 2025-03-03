@@ -79,7 +79,7 @@ print(bloch)
 #Both methods have examples given in the user guide under the bloch sphere section
 
 
-
+#Bloch sphere animations
 
 
 
