@@ -22,6 +22,10 @@ Created on Mon Mar  3 12:57:18 2025
 #The discussion on replacing the current version of ODRPACK in scipy can be found here:
 #https://github.com/scipy/scipy/issues/7107
 
+#In order to install odrpack locally on your machine you can use the command:
+#pip install odrpack
+#I have found that I need to use the anaconda terminal in order for this to work.
+
 #Fitting functions will be added over time as and when they are needed.
 #Current list of fitting functions available to parse to fitter() is:
     #linear fit
@@ -36,6 +40,7 @@ Created on Mon Mar  3 12:57:18 2025
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+from odrpack import odr
 from scipy import linalg
 from statsmodels.stats import stattools #Used for calculating Durbin-Watson statistic
 
@@ -45,12 +50,19 @@ class data_plotter():
     uncertainties will both plot data and also attempt to fit data using given fit function
     and ODRPACK95.'''
     
-    def fitter():
+    def fitter(x, y, xerr, yerr, initial_guess, fit_func, lower_bound, upper_bound):
         '''Fits data to given fit function using ODRPACK95 which allows both parameter constraints and 
         accounts for errors in both dependent and independent variables. Plot of original data with
         determined fit also produced.'''
         
-        #Use ODRPACK95 binding
+        #Use ODRPACK95 binding for fitting and use pandas for generality of code written
+        sol = odr(fit_func, y, x, beta0 = initial_guess, lower = lower_bound, upper = upper_bound,
+                  we = yerr, wd = xerr)
+        parameter_estimates = sol.beta
+        parameter_uncertainty_estimates = sol.sd_beta
+        sol.info
+        sol.stopreason
+        sol.success
     
     def fit_func_linear(x, m, c):
         '''Fitting function of linear form. y = mx + c, where m is the gradient and c is the intercept.'''
