@@ -60,9 +60,14 @@ class data_plotter():
                   we = yerr, wd = xerr)
         parameter_estimates = sol.beta
         parameter_uncertainty_estimates = sol.sd_beta
+        cov_matrix = sol.cov_beta
+        iteration_number = sol.niter
+        residual_sum_squares = sol.sum_square_eps
         sol.info
         sol.stopreason
-        sol.success
+        
+        return parameter_estimates, parameter_uncertainty_estimates, cov_matrix,\
+                iteration_number, residual_sum_squares
     
     def fit_func_linear(x, m, c):
         '''Fitting function of linear form. y = mx + c, where m is the gradient and c is the intercept.'''
@@ -149,38 +154,24 @@ class data_analysis():
         
         return normalised_residuals 
         
-    def chi_squared(norm_residuals, observed_value, expected_value, continuous_marker):
-        '''Computes the residual sum of squares (RSS) of fit. This function also creates 
-        contour plots for the different parameters of the fit applied to the data.
-        The parameter norm_residuals represents the normalised residuals calculated previously and
-        is used to calculate RSS for continuous data; observed and expected value are used tor
-        discrete data after binning. The continuous_marker parameter defines how the RSS is
-        calculated, use TRUE for continuous data and FALSE for discrete (binned) data.'''
-        
-        #Discrete RSS and continuous RSS are calculated differently
-        if continuous_marker == "TRUE":
-            RSS = np.sum(norm_residuals**2)
-            print("RSS calculated assuming continuous data set.")
-        elif continuous_marker == "FALSE":
-            RSS = np.sum(((observed_value - expected_value)**2)/expected_value)
-            print("RSS calculated assuming discrete data set.")
-        else:
-            print("Error in chi_squared(). Unknown continuous marker parsed.")
-        print("The residual sum of squares (RSS) or chi squared of this fit is", RSS)
-        
-        #Contour plots of variation of fit parameters effect on chi squared
-        
-        #CONTOUR PLOTS HERE
-        
-        return RSS 
         
     def reduced_chi_squared(RSS, num_degree_freedom):
-        '''Computes the reduced chi squared given the RSS and number of degrees of freedom.'''
+        '''Computes the reduced chi squared given the RSS and number of degrees of freedom.
+            This function also creates contour plots for the different parameters of 
+            the fit applied to the data.'''
+            
+        print("The RSS of this fit is:", RSS)
         
         #Calculate reduced chi squared
         print("The number of degrees of freedom in this problem is:", num_degree_freedom)
         reduced_chi_squared = RSS/num_degree_freedom
         print("The reduced chi squared associated with this fit is:", reduced_chi_squared)
+        
+        #Contour plots of variation of fit parameters effect on chi squared
+        
+        #CONTOUR PLOTS HERE
+        
+        
         return reduced_chi_squared
         
     def durbin_watson(norm_residuals):
